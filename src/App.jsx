@@ -4,7 +4,7 @@ import MovieList, { movieLoader } from './components/MovieList.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/movies",
+    path: "/",
     element: <MovieList />,
     loader: movieLoader
   }

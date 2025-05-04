@@ -13,7 +13,7 @@ export async function cinemaLoader({ params }) {
   console.log("loader:", filmId)
 
   for (let i = 1; i <= totalSeats; i++) {
-    newSeats.push({id: i, available: true})
+    newSeats.push({id: i, available: true, selected: false})
   }
 
   console.log(newSeats)
@@ -52,15 +52,25 @@ export default function CinemaHall() {
 
     const updatedSeats = selectedSeats.map(seat =>
       seat.id === seatId ?
-      {...seat, available: !seat.available} :
+      {...seat, selected: !seat.selected} :
         seat)
 
     setSelectedSeats(updatedSeats)
-
-    localStorage.setItem(`seats-${movie.id}`, JSON.stringify(updatedSeats))
   }
 
   console.log(useLoaderData())
+
+  function handleButton() {
+
+    const reservedSeats = selectedSeats.map(seat => seat.selected ? {...seat, available: false,
+    selected: false} : seat)
+
+    setSelectedSeats(reservedSeats)
+
+    localStorage.setItem(`seats-${movie.id}`, JSON.stringify(reservedSeats))
+
+
+  }
 
 
   return (
@@ -70,7 +80,7 @@ export default function CinemaHall() {
       <div className="mt-5 grid grid-cols-8">
         {selectedSeats.map(seat =>
           <div className =
-                 {`flex bg-${seat.available === true ? "green-700" : "blue-600"} 
+                 {`flex bg-${seat.selected ? "orange-700" : seat.available ? "green-700" : "blue-700"} 
                   m-2 w-11 h-12 items-center
                   justify-center cursor-pointer rounded-sm`}
                 onClick = {() => handleSeatClick(seat.id)}
@@ -79,6 +89,10 @@ export default function CinemaHall() {
           </div>)
         }
       </div>
+      <button
+        onClick = {() => handleButton()}
+        className="bg-neutral-800 h-10 rounded-2xl text-blue-500 cursor-pointer
+          hover:bg-blue-500 hover:text-white active:scale-95 transition-all duration-300">Забронювати</button>
     </div>
   )
 

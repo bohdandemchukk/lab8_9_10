@@ -1,10 +1,13 @@
 import dayjs from "dayjs";
 import "dayjs/locale/uk";
-import {useEffect, useState} from "react"
+import {useEffect, useState, } from "react"
+import {useNavigate} from "react-router-dom"
 dayjs.locale("uk");
 
 
 export default function MovieCard({ movie }) {
+
+  const navigate = useNavigate()
 
   if (movie.title === "Викрадач коштовностей: Пограбування починається") {
     movie.title = "Викрадач коштовностей"
@@ -68,8 +71,11 @@ export default function MovieCard({ movie }) {
             <p>{formattedDate}</p>
           </div>
 
-          <button className="bg-neutral-800 h-10 rounded-2xl text-blue-500 cursor-pointer
-          hover:bg-blue-500 hover:text-white active:scale-95 transition-all duration-300">Забронювати</button>
+          <button
+            onClick = {() => navigate(`/booking/${movie.id}`)}
+            className="bg-neutral-800 h-10 rounded-2xl text-blue-500 cursor-pointer
+          hover:bg-blue-500 hover:text-white active:scale-95 transition-all duration-300"
+          >Забронювати</button>
         </div>
 
 

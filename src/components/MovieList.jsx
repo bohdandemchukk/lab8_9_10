@@ -2,7 +2,7 @@ import MovieCard from "./MovieCard.jsx";
 import {useLoaderData} from "react-router-dom";
 import axios from "axios";
 
-import {useState} from "react"
+import {useState, createContext} from "react"
 
 
 export async function movieLoader() {
@@ -14,10 +14,14 @@ export async function movieLoader() {
   return response.data.results;
 }
 
+const MoviesContext = createContext(null)
+
 export default function MovieList() {
 
   const [searchValue, setSearchValue] = useState(null)
   const movies = useLoaderData()
+
+
 
   const filteredMovies = searchValue
     ? movies.filter(movie => {

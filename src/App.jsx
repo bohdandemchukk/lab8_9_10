@@ -1,12 +1,25 @@
 import React from 'react';
-import { createBrowserRouter, RouterProvider} from 'react-router-dom';
-import MovieList, { movieLoader } from './components/MovieList.jsx';
+import {createBrowserRouter, Navigate, RouterProvider} from 'react-router-dom';
+import { movieLoader } from './components/MovieList.jsx';
+import Home from "./pages/Home.jsx";
+import Booking from "./pages/Booking.jsx";
+import { cinemaLoader } from "./components/CinemaHall.jsx";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <MovieList />,
+    element: <Home />,
     loader: movieLoader
+  },
+  {
+    path:"/booking/:filmId",
+    element: <Booking/>,
+    loader: cinemaLoader
+  },
+  {
+    path:"/*",
+    element: <Navigate to="/" replace/>
   }
 ]);
 

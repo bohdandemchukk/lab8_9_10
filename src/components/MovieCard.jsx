@@ -7,6 +7,7 @@ dayjs.locale("uk");
 
 export default function MovieCard({ movie }) {
 
+
   const navigate = useNavigate()
 
   if (movie.title === "Викрадач коштовностей: Пограбування починається") {
@@ -24,7 +25,6 @@ export default function MovieCard({ movie }) {
     const storedTime = localStorage.getItem(`time-${movie.id}`);
 
     if (storedDay && storedDate && storedTime) {
-
       setFormattedDay(storedDay);
       setFormattedDate(storedDate);
       setRandomTime(storedTime);
@@ -77,8 +77,6 @@ export default function MovieCard({ movie }) {
           hover:bg-blue-500 hover:text-white active:scale-95 transition-all duration-300"
           >Забронювати</button>
         </div>
-
-
       </div>
     </div>
   );

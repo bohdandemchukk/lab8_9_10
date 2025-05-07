@@ -2,7 +2,7 @@ import MovieCard from "./MovieCard.jsx";
 import {useLoaderData} from "react-router-dom";
 import axios from "axios";
 
-import {useState, createContext} from "react"
+import {useState} from "react"
 
 
 export async function movieLoader() {
@@ -14,14 +14,11 @@ export async function movieLoader() {
   return response.data.results;
 }
 
-const MoviesContext = createContext(null)
 
 export default function MovieList() {
 
   const [searchValue, setSearchValue] = useState(null)
   const movies = useLoaderData()
-
-
 
   const filteredMovies = searchValue
     ? movies.filter(movie => {
@@ -44,11 +41,18 @@ export default function MovieList() {
         onChange={(e) => setSearchValue(e.target.value)}
       />
 
-      <div className="grid grid-cols-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full p-4">
           {filteredMovies.map(movie => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
       </div>
-          </div>
+
+      {filteredMovies.length === 0 && (
+        <div className="text-white text-center p-8">
+          Фільмів не знайдено. Спробуйте змінити критерії пошуку.
+        </div>
+      )}
+    </div>
   );
 }
+

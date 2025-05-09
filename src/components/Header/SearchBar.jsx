@@ -9,7 +9,7 @@ export default function SearchBar() {
     <input
       type="text"
       placeholder="Пошук фільмів"
-      className="w-full mx-5 p-3 pl-5 mt-1 bg-zinc-900 border border-zinc-700 rounded-3xl text-white
+      className="w-full h-13/20 mx-5 p-3 pl-5 mt-1 bg-zinc-900 border border-zinc-700 rounded-3xl text-white
     placeholder-gray-400 focus:outline-none focus:border-zinc-400 transition-all duration-300
     hover:border-zinc-500 hover:shadow-lg"
       value={searchValue}

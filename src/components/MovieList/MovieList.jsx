@@ -4,6 +4,8 @@ import axios from "axios";
 import {useContext} from "react"
 import {SearchContext} from "../../context/SearchContext.jsx"
 
+import {motion} from "framer-motion"
+
 
 export async function movieLoader() {
   const apiKey = import.meta.env.VITE_MOVIES_API_KEY;
@@ -31,6 +33,12 @@ export default function MovieList() {
 
 
   return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="text-white flex flex-col items-center justify-center  w-full"
+    >
     <div className= "flex flex-col items-center">
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full p-4">
@@ -45,6 +53,7 @@ export default function MovieList() {
         </div>
       )}
     </div>
+    </motion.div>
   );
 }
 

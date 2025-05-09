@@ -73,8 +73,8 @@ export default function MovieCard({ movie }) {
 
           <button
             onClick = {() => navigate(`/booking/${movie.id}`)}
-            className="bg-neutral-800 h-10 rounded-2xl text-blue-500 cursor-pointer
-          hover:bg-blue-500 hover:text-white active:scale-95 transition-all duration-300"
+            className="bg-neutral-800 h-10 rounded-2xl text-indigo-400 cursor-pointer
+          hover:bg-slate-700 hover:text-indigo-200 active:scale-95 transition-all duration-300"
           >Забронювати</button>
         </div>
       </div>

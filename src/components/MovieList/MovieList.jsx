@@ -1,8 +1,8 @@
-import MovieCard from "./MovieCard.jsx";
+import MovieCard from "../MovieCard/MovieCard.jsx";
 import {useLoaderData} from "react-router-dom";
 import axios from "axios";
-
-import {useState} from "react"
+import {useContext} from "react"
+import {SearchContext} from "../../context/SearchContext.jsx"
 
 
 export async function movieLoader() {
@@ -17,7 +17,8 @@ export async function movieLoader() {
 
 export default function MovieList() {
 
-  const [searchValue, setSearchValue] = useState(null)
+  const {searchValue} = useContext(SearchContext)
+
   const movies = useLoaderData()
 
   const filteredMovies = searchValue
@@ -31,15 +32,6 @@ export default function MovieList() {
 
   return (
     <div className= "flex flex-col items-center">
-      <input
-        type="text"
-        placeholder="Пошук фільмів"
-        className="w-95/100 p-3 pl-5 mt-3 bg-zinc-900 border border-zinc-700 rounded-3xl text-white
-    placeholder-gray-400 focus:outline-none focus:border-zinc-400 transition-all duration-300
-    hover:border-zinc-500 hover:shadow-lg"
-
-        onChange={(e) => setSearchValue(e.target.value)}
-      />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full p-4">
           {filteredMovies.map(movie => (

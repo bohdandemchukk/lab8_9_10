@@ -1,21 +1,26 @@
 import React from 'react';
 import {createBrowserRouter, Navigate, RouterProvider} from 'react-router-dom';
-import { movieLoader } from './components/MovieList.jsx';
+import { movieLoader } from './components/MovieList/MovieList.jsx';
 import Home from "./pages/Home.jsx";
 import Booking from "./pages/Booking.jsx";
-import { cinemaLoader } from "./components/CinemaHall.jsx";
+import { cinemaLoader } from "./components/CinemaHall/CinemaHall.jsx";
+import Layout from "./components/Layout/Layout.jsx"
+import SearchProvider from "./context/SearchContext.jsx"
+
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-    loader: movieLoader
-  },
-  {
-    path:"/booking/:filmId",
-    element: <Booking/>,
-    loader: cinemaLoader
+    element: <Layout />,
+    children: [
+      {index: true, element: <Home/>, loader: movieLoader},
+      {
+        path:"/booking/:filmId",
+        element: <Booking/>,
+        loader: cinemaLoader
+      }
+    ]
   },
   {
     path:"/*",
@@ -25,8 +30,8 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <RouterProvider
-      router={router}
-    />
+    <SearchProvider>
+      <RouterProvider router={router}/>
+    </SearchProvider>
   );
 }

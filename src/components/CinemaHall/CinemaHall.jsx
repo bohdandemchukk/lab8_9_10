@@ -1,81 +1,32 @@
-import {useLoaderData} from "react-router-dom"
-import axios from "axios";
+import {useParams} from "react-router-dom"
 import BookingForm from "../BookingForm/BookingForm.jsx";
-import {useState, useEffect} from "react";
+import {useState} from "react";
 import {motion, AnimatePresence} from "framer-motion"
-
-
-export async function cinemaLoader({ params }) {
-
-  const { filmId } = params
-  const totalSeats = 56;
-  const newSeats = [];
-
-  for (let i = 1; i <= totalSeats; i++) {
-    newSeats.push({id: i, available: true, selected: false})
-  }
-
-  const apiKey = import.meta.env.VITE_MOVIES_API_KEY;
-  const url = `https://api.themoviedb.org/3/movie/${filmId}?api_key=${apiKey}&language=uk-UA`;
-  const response = await axios.get(url)
-
-  return {
-    movie: response.data,
-    seats: newSeats
-
-  }
-}
-
+import {useMovies} from "../../hooks/useMovies.js";
+import {useSeats} from "../../hooks/useSeats.js"
 
 export default function CinemaHall() {
 
-  const {movie, seats} = useLoaderData()
-
-  const [selectedSeats, setSelectedSeats] = useState([])
-
   const [modalOpened, setModalOpened] = useState(false);
 
+  const { filmId } = useParams()
+  const filmIdNumber = Number(filmId)
 
-  useEffect(() => {
-    const savedSeats = localStorage.getItem(`seats-${movie.id}`)
-    if (savedSeats) {
-      setSelectedSeats(JSON.parse(savedSeats))
-    } else {
-      setSelectedSeats(seats)
-    }
-  }, [movie.id, seats])
+  const {data, isLoading, error} = useMovies()
+  const movie = data?.movies.results.find(movie => movie.id === filmIdNumber)
 
+  const movieGenres = movie?.genre_ids ?
+    movie.genre_ids.map(genre_id => data.genres.find(genre => genre.id === genre_id).name)
+    : null
 
-  function handleSeatClick(seatId) {
+  const {seats, toggleSeat, bookSeats} = useSeats(filmId)
 
-    const updatedSeats = selectedSeats.map(seat =>
-      seat.id === seatId ?
-        {...seat, selected: !seat.selected} :
-        seat)
-
-    setSelectedSeats(updatedSeats)
+  if (isLoading) {
+    return <div>Завантаження...</div>;
   }
 
-
-  function handleButton() {
-    if (selectedSeats.find(seat => seat.selected)) {
-      setModalOpened(true)
-    } else {
-      alert("Будь ласка, оберіть місця")
-    }
-  }
-
-  function confirmBooking() {
-
-    const reservedSeats = selectedSeats.map(seat => seat.selected ? {...seat, available: false,
-      selected: false} : seat)
-
-
-    setSelectedSeats(reservedSeats)
-
-    localStorage.setItem(`seats-${movie.id}`, JSON.stringify(reservedSeats))
-
-
+  if (error || !movie) {
+    return <div>Фільм не знайдено.</div>;
   }
 
 
@@ -107,7 +58,7 @@ export default function CinemaHall() {
 
               <div className="mt-4 text-center w-full">
                 <h2 className="text-xl font-bold text-white mb-1 max-w-full">{movie.title}</h2>
-                <p className="text-sm text-zinc-400 mb-3">{movie.release_date ? new Date(movie.release_date).getFullYear() : ''}</p>
+                <p className="text-sm text-zinc-400 mb-3">{movie.release_date ? movie.release_date.slice(0, 4) : null}</p>
 
                 <div className="flex items-center justify-center gap-4 mb-4">
                   <div className="flex items-center justify-center">
@@ -117,15 +68,12 @@ export default function CinemaHall() {
                     <span className="text-xs text-zinc-400 ml-1">TMDB</span>
                   </div>
 
-                  <div className="px-3 py-1 bg-indigo-500/20 rounded-full">
-                    <span className="text-xs text-indigo-300">{`${movie.runtime} хв.`}</span>
-                  </div>
                 </div>
 
                 <div className="flex flex-wrap justify-center gap-2 mb-4">
-                  {movie.genres && movie.genres.map(genre => (
-                    <span key={genre.id} className="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md">
-                      {genre.name}
+                  {movieGenres && movieGenres.map(genre => (
+                    <span key={genre} className="text-xs bg-zinc-800 text-zinc-300 px-2 py-1 rounded-md">
+                      {genre}
                     </span>
                   ))}
                 </div>
@@ -163,7 +111,7 @@ export default function CinemaHall() {
               </div>
 
               <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 lg:grid-cols-8 gap-3 px-6 w-full">
-                {selectedSeats.map(seat => (
+                {seats.map(seat => (
                   <motion.div
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
@@ -174,7 +122,7 @@ export default function CinemaHall() {
                         "bg-red-700 text-zinc-200 opacity-80"}
                     transition-all duration-200
                   `}
-                    onClick={() => seat.available && handleSeatClick(seat.id)}
+                    onClick={() => seat.available && toggleSeat(seat.id)}
                     key={seat.id}
                   >
                     {seat.id}
@@ -197,7 +145,7 @@ export default function CinemaHall() {
                 </div>
               </div>
               <button
-                onClick={handleButton}
+                onClick={() => bookSeats(filmId)}
                 className="mt-6 bg-neutral-800 h-10 px-6 rounded-2xl text-indigo-300 cursor-pointer
             hover:bg-slate-700 hover:text-indigo-200 active:scale-95 transition-all duration-300"
               >

@@ -1,27 +1,27 @@
 import MovieCard from "../MovieCard/MovieCard.jsx";
-import {useLoaderData} from "react-router-dom";
-import axios from "axios";
 import {useContext} from "react"
 import {SearchContext} from "../../context/SearchContext.jsx"
-
+import {useMovies} from "../../hooks/useMovies.js";
 import {motion} from "framer-motion"
 
 
-export async function movieLoader() {
-  const apiKey = import.meta.env.VITE_MOVIES_API_KEY;
-
-  const url = `https://api.themoviedb.org/3/movie/now_playing?api_key=${apiKey}&language=uk-UA&page=1`;
-
-  const response = await axios.get(url);
-  return response.data.results;
-}
 
 
 export default function MovieList() {
 
   const {searchValue} = useContext(SearchContext)
 
-  const movies = useLoaderData()
+  const {data, isLoading, error} = useMovies()
+
+  if (isLoading) {
+    return <div className="text-white text-center p-8">Завантаження...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center p-8">Помилка при завантаженні фільмів.</div>;
+  }
+
+  const movies = data?.movies.results || [];
 
   const filteredMovies = searchValue
     ? movies.filter(movie => {

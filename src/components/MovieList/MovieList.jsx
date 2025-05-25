@@ -13,6 +13,8 @@ export default function MovieList() {
 
   const {data, isLoading, error} = useMovies()
 
+
+
   if (isLoading) {
     return <div className="text-white text-center p-8">Завантаження...</div>;
   }

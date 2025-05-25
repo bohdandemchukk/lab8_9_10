@@ -19,7 +19,7 @@ export default function CinemaHall() {
     movie.genre_ids.map(genre_id => data.genres.find(genre => genre.id === genre_id).name)
     : null
 
-  const {seats, toggleSeat, bookSeats} = useSeats(filmId)
+  const {seats, selectedSeats, toggleSeat, bookSeats, handleForm} = useSeats(filmId)
 
   if (isLoading) {
     return <div>Завантаження...</div>;
@@ -28,7 +28,6 @@ export default function CinemaHall() {
   if (error || !movie) {
     return <div>Фільм не знайдено.</div>;
   }
-
 
   return (
     <>
@@ -83,26 +82,22 @@ export default function CinemaHall() {
             </div>
 
             <div>
-            <div className="text-left h-auto w-auto max-w-[300px] mt-3 border-t border-zinc-700 pt-3">
-              <h3 className="text-zinc-300 text-sm font-medium mb-2">Опис:</h3>
-              <p className="text-xs text-zinc-400">{movie.overview}</p>
-            </div>
+              <div className="text-left h-auto w-auto max-w-[300px] mt-3 border-t border-zinc-700 pt-3">
+                <h3 className="text-zinc-300 text-sm font-medium mb-2">Опис:</h3>
+                <p className="text-xs text-zinc-400">{movie.overview}</p>
+              </div>
 
-            <div className="mt-4 bg-zinc-800/50 rounded-lg p-3 w-full">
-              <h3 className="text-sm font-medium text-zinc-300 mb-2">Інформація про сеанс</h3>
-              <div className="flex justify-between text-xs text-zinc-400 mb-1">
-                <span>Дата:</span>
-                <span className="text-white">{movie.release_date}</span>
+              <div className="mt-4 bg-zinc-800/50 rounded-lg p-3 w-full">
+                <h3 className="text-sm font-medium text-zinc-300 mb-2">Інформація про сеанс</h3>
+                <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                  <span>Дата:</span>
+                  <span className="text-white">{(localStorage.getItem(`date-${movie.id}`))}</span>
+                </div>
+                <div className="flex justify-between text-xs text-zinc-400 mb-1">
+                  <span>Час:</span>
+                  <span className="text-white">{(localStorage.getItem(`time-${movie.id}`))}</span>
+                </div>
               </div>
-              <div className="flex justify-between text-xs text-zinc-400 mb-1">
-                <span>Час:</span>
-                <span className="text-white">19:30</span>
-              </div>
-              <div className="flex justify-between text-xs text-zinc-400">
-                <span>Зал:</span>
-                <span className="text-white">2</span>
-              </div>
-            </div>
             </div>
 
             <div className="flex flex-col items-center bg-zinc-900/80 rounded-xl border border-zinc-700 shadow-xl py-5">
@@ -145,7 +140,7 @@ export default function CinemaHall() {
                 </div>
               </div>
               <button
-                onClick={() => bookSeats(filmId)}
+                onClick={() => handleForm(setModalOpened)}
                 className="mt-6 bg-neutral-800 h-10 px-6 rounded-2xl text-indigo-300 cursor-pointer
             hover:bg-slate-700 hover:text-indigo-200 active:scale-95 transition-all duration-300"
               >
@@ -158,21 +153,20 @@ export default function CinemaHall() {
         </div>
       </motion.div>
 
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {modalOpened && (
           <motion.div
             className="fixed inset-0 flex items-center justify-center text-white z-50"
             style={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             onClick={() => setModalOpened(false)}
           >
             <motion.div
               className="bg-zinc-900 p-6 rounded-lg max-w-md w-full border-solid border-zinc-800 border-2 relative"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
+
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -183,14 +177,33 @@ export default function CinemaHall() {
                 &times;
               </button>
 
-              <h2 className="text-xl font-bold mb-2">Оформлення квитків</h2>
-              <h3 className="text-lg mb-2">{movie.title}</h3>
-              <h4 className="mb-3">Обрані місця: </h4>
-              <BookingForm />
+              <h2 className="flex w-full justify-center text-xl font-bold mb-4">Оформлення квитків</h2>
+
+              <h4 className="mb-3 flex gap-2 flex-wrap">
+                Обрані місця:{" "}
+                {selectedSeats.map((seat) => (
+                  <div
+                    key={seat.id}
+                    className="flex items-center justify-center
+                 bg-blue-600 rounded-sm text-xs
+                 text-white font-bold shadow-lg
+                 shadow-blue-500/30 w-6 h-6"
+                  >
+                    {seat.id}
+                  </div>
+                ))}
+              </h4>
+
+              <BookingForm
+                bookSeats={bookSeats}
+                setModalOpened={setModalOpened}
+                filmId={filmIdNumber}
+              />
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
+
     </>
   )
 }

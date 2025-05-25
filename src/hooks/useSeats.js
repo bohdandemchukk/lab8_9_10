@@ -26,6 +26,8 @@ export function getSeats(movieId) {
 export function useSeats(movieId) {
   const [seats, setSeats] = useState([])
 
+  const selectedSeats = seats.filter(seat => seat.selected)
+
   useEffect(() => {
     const movieSeats = getSeats(movieId);
     setSeats(movieSeats)
@@ -38,11 +40,19 @@ export function useSeats(movieId) {
     setSeats(updatedSeats)
   }
 
+  function handleForm(setModalOpened) {
+    if (selectedSeats) {
+      setModalOpened(true)
+    } else {
+      alert("Будь ласка, оберіть бажані місця")
+    }
+  }
+
   function bookSeats(movieId) {
     const bookedSeats = seats.map(seat => seat.selected ? {...seat, available: false, selected: false} : seat)
     setSeats(bookedSeats)
     saveSeats(movieId, bookedSeats)
   }
 
-  return { seats, toggleSeat, bookSeats }
+  return { seats, selectedSeats, toggleSeat, bookSeats, handleForm }
 }

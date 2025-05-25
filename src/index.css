@@ -14,3 +14,13 @@ body {
 body::-webkit-scrollbar {
     display: none;
 }
+
+
+input:-webkit-autofill {
+    background-color: #18181b !important;
+    -webkit-text-fill-color: #ffffff !important;
+    font-weight: 500 !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
+}
+

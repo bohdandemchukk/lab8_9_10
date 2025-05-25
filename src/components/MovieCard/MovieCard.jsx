@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import "dayjs/locale/uk";
-import {useEffect, useState, } from "react"
 import {useNavigate} from "react-router-dom"
+import useDate from "../../hooks/useDate.js"
 dayjs.locale("uk");
 
 
@@ -14,38 +14,8 @@ export default function MovieCard({ movie }) {
     movie.title = "Викрадач коштовностей"
   }
 
-  const [formattedDay, setFormattedDay] = useState("");
-  const [formattedDate, setFormattedDate] = useState("");
-  const [randomTime, setRandomTime] = useState("");
+  const {formattedDate, formattedDay, randomTime} = useDate(movie)
 
-  useEffect(() => {
-
-    const storedDay = localStorage.getItem(`day-${movie.id}`);
-    const storedDate = localStorage.getItem(`date-${movie.id}`);
-    const storedTime = localStorage.getItem(`time-${movie.id}`);
-
-    if (storedDay && storedDate && storedTime) {
-      setFormattedDay(storedDay);
-      setFormattedDate(storedDate);
-      setRandomTime(storedTime);
-    } else {
-
-      const newDay = dayjs(movie.release_date).format("dddd");
-      const newDate = dayjs(movie.release_date).format("D MMMM");
-
-      const newHour = Math.floor(Math.random() * (22 - 10 + 1)) + 10;
-      const newMinute = [0, 15, 30, 45][Math.floor(Math.random() * 4)];
-      const newTime = `${newHour}:${newMinute < 10 ? "0" + newMinute : newMinute}`;
-
-      localStorage.setItem(`day-${movie.id}`, newDay);
-      localStorage.setItem(`date-${movie.id}`, newDate);
-      localStorage.setItem(`time-${movie.id}`, newTime);
-
-      setFormattedDay(newDay);
-      setFormattedDate(newDate);
-      setRandomTime(newTime);
-    }
-  }, [movie.id, movie.release_date]);
 
 
   return (

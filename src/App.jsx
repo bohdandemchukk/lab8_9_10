@@ -5,6 +5,8 @@ import Booking from "./pages/Booking.jsx";
 import Layout from "./components/Layout/Layout.jsx"
 import SearchProvider from "./context/SearchContext.jsx"
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {ToastContainer} from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const queryClient = new QueryClient()
 const router = createBrowserRouter([
@@ -27,10 +29,14 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <SearchProvider>
-        <RouterProvider router={router}/>
-      </SearchProvider>
-    </QueryClientProvider>
+    <>
+      <QueryClientProvider client={queryClient}>
+
+          <SearchProvider>
+            <RouterProvider router={router}/>
+          </SearchProvider>
+      </QueryClientProvider>
+      <ToastContainer position="top-right" autoClose={3000} closeOnClick theme = "dark" toastClassName="border border-zinc-700 rounded-xl shadow-xl"/>
+    </>
   );
 }

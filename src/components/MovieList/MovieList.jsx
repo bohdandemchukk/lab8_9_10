@@ -4,9 +4,6 @@ import {SearchContext} from "../../context/SearchContext.jsx"
 import {useMovies} from "../../hooks/useMovies.js";
 import {motion} from "framer-motion"
 
-
-
-
 export default function MovieList() {
 
   const {searchValue} = useContext(SearchContext)

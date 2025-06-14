@@ -1,4 +1,6 @@
 import {useEffect, useState} from "react";
+import useToast from "./useToast.js";
+
 
 
 export function saveSeats(movieId, seats) {
@@ -6,10 +8,14 @@ export function saveSeats(movieId, seats) {
 }
 
 export function getSeats(movieId) {
+  
+
+  
   const savedSeats = localStorage.getItem(`seats-${movieId}`)
   if (savedSeats) {
     return JSON.parse(savedSeats)
   }
+
   else {
 
     const totalSeats = 56;
@@ -24,6 +30,9 @@ export function getSeats(movieId) {
 }
 
 export function useSeats(movieId) {
+  
+  const {showErrorToast} = useToast();
+  
   const [seats, setSeats] = useState([])
 
   const selectedSeats = seats.filter(seat => seat.selected)
@@ -41,10 +50,11 @@ export function useSeats(movieId) {
   }
 
   function handleForm(setModalOpened) {
-    if (selectedSeats) {
+    if (selectedSeats.length > 0) {
+      console.log(selectedSeats)
       setModalOpened(true)
     } else {
-      alert("Будь ласка, оберіть бажані місця")
+      showErrorToast("Будь ласка, оберіть бажані місця")
     }
   }
 

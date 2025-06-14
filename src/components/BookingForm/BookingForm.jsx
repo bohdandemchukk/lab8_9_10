@@ -1,41 +1,11 @@
 import { Form } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useRef } from "react";
+import useToast from "../../hooks/useToast.js";
 
 export default function BookingForm({ bookSeats, filmId, setModalOpened }) {
 
-  const errorToastId = useRef(null);
-  const successToastId = useRef(null);
+  const {showSuccessToast, showErrorToast} = useToast();
 
-  const showErrorToast = (message) => {
-    if (toast.isActive(errorToastId.current)) {
-      toast.update(errorToastId.current, {
-        render: message,
-        type: toast.TYPE.ERROR,
-        autoClose: 3000,
-      });
-    } else {
-      errorToastId.current = toast.error(message, {
-        autoClose: 3000,
-      });
-    }
-  };
-
-  const showSuccessToast = (message) => {
-    if (toast.isActive(successToastId.current)) {
-      toast.update(successToastId.current, {
-        render: message,
-        type: toast.TYPE.SUCCESS,
-        autoClose: 3000,
-      });
-    } else {
-      successToastId.current = toast.success(message, {
-        autoClose: 3000,
-      });
-    }
-  };
-
-  const handleSubmit = (e) => {
+  function handleSubmit(e) {
     e.preventDefault();
 
     const name = e.target.name.value.trim().replace(/\s+/g, " ");
